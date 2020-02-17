@@ -1,0 +1,5 @@
+package com.app.repositry;
+
+public interface OrderRepository {
+
+}

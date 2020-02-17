@@ -1,0 +1,29 @@
+package com.app.dao;
+
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import com.app.exception.BookException;
+import com.app.model.User;
+
+@Repository
+public class UserDaoImp implements UserDaoInf{
+
+
+	@Autowired
+	EntityManager entity_manager;
+	
+	@Override
+	public User validateUser(String email, String pass) throws BookException {	
+		String jpql = "select u from User u where u.email = :email and u.password = :password";
+		try {
+			return entity_manager.createQuery(jpql, User.class).setParameter("email", email).setParameter("password", pass).getSingleResult();
+			
+		}catch (NoResultException e) {
+			throw new BookException("Invalid user and password");
+		}
+	}
+}

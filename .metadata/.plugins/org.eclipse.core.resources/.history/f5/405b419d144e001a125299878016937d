@@ -1,0 +1,103 @@
+package com.app.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import com.app.dao.BookDaoInf;
+import com.app.exception.BookException;
+import com.app.model.Book;
+import com.app.repositry.BookRepository;
+
+@Service
+@Repository
+@Transactional
+/*	Class that perform basic CRUD Operation on class Book	*/
+public class BookServiceImp implements BookServiceInf{
+
+	@Autowired
+	private BookRepository admin_repo;
+	
+	@Autowired
+	private BookDaoInf dao;
+	/*	Taking Book as an argument and add book into database	*/
+	@Override
+	public Book addBook(Book book) {
+		return admin_repo.save(book);
+	}
+
+	/*	return all books available in database	*/
+	@Override
+	public List<Book> getAllBook() {
+		List<Book> books = new ArrayList<>();
+		admin_repo.findAll().forEach(books::add);
+		return books;
+	}
+
+	/* taking book id as an arg and return book detail based on book id */
+	@Override
+	public Book getBookById(int book_id) throws BookException {
+		Optional<Book> optional_book = admin_repo.findById(book_id);
+		if(optional_book.isPresent()) {
+			return optional_book.get();
+		}else {
+			throw new BookException("Book not exist");
+		}	
+	}
+	
+	/* taking book name as an arg and return list of books based on book name */
+	@Override
+	public List<Book> getBookByName(String name) throws BookException {
+		return dao.getBookByName(name);
+	}
+
+	/* delete book from database by book Id */
+	@Override
+	public boolean removeBook(Integer book_id) throws BookException {
+		try{
+			admin_repo.deleteById(book_id);
+			return true;
+		}catch (EmptyResultDataAccessException e) {
+			throw new BookException("No book available");
+		}
+	}
+
+	/*	delete book from database by book name and return number of books deleted	*/
+	@Override
+	public int removeBookByName(String name) throws BookException {
+		  return dao.removeBookByName(name);
+	}
+
+	/*	Taking Book argument as input and Update book details if book available return updated details	*/
+	@Override
+	public Book updateBook(Book book) throws BookException {
+		try {
+			if(this.getBookById(book.getBook_id()) != null) 
+				return admin_repo.save(book);		
+		}catch (BookException e) {
+			throw new BookException("Book doesn't exist");
+		} 
+		return null;
+	}
+
+	@Override
+	public List<Book> getAllBooksByRating(int lower_rating, int upper_rating) {
+		return dao.getAllBooksByRating(lower_rating, upper_rating);
+	}
+
+	@Override
+	public List<Book> getAllBooksByPrice(double lower_price, double upper_price) {
+		return dao.getAllBooksByPrice(lower_price, upper_price);
+	}
+
+	@Override
+	public List<Book> getAllBooksByCategories(String category_type) {
+		return dao.getAllBooksByCategories(category_type);
+	}
+	
+	
+}

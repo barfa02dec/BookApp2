@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="LaunchTerminalSettingsDialog">
+		<item key="terminalLabel" value="Local Terminal"/>
+		<section name="SettingsPanelControl">
+			<section name="Git Bash">
+			</section>
+			<section name="Local Terminal">
+				<item key="encoding" value="Cp1252"/>
+			</section>
+			<section name="Telnet Terminal">
+				<item key="lastHost" value="10.16.90.65"/>
+				<list key="hosts">
+				</list>
+			</section>
+		</section>
+	</section>
+</section>

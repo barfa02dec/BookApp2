@@ -1,0 +1,22 @@
+package com.app.dao;
+
+import java.util.List;
+
+import com.app.exception.BookException;
+import com.app.model.Book;
+import com.app.model.Orders;
+import com.app.model.User;
+
+public interface OrderDaoInf {
+	
+	/**************** Insert order ****************/
+	public boolean placeOrder(int user_id, int book_id) throws BookException;
+
+	
+	/**************** get orders ****************/
+	public List<Orders> getAllOrders(int user_id) throws BookException;
+	
+	
+	/**************** remove order ****************/
+	public int removeOrder(User user, Book book) throws BookException;
+}

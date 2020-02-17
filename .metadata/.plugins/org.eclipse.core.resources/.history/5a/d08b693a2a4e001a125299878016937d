@@ -1,0 +1,64 @@
+package com.app.dao;
+
+import java.time.LocalDate;
+import java.util.List;
+import javax.persistence.EntityManager;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.app.exception.BookException;
+import com.app.model.Book;
+import com.app.model.Orders;
+import com.app.model.User;
+import com.app.service.BookServiceInf;
+import com.app.service.UserServiceInf;
+
+@Repository
+public class OrderDaoImp implements OrderDaoInf{
+	
+	@Autowired
+	EntityManager entity_manager;
+	
+	@Autowired
+	UserServiceInf user_inf;
+	
+	@Autowired
+	BookServiceInf book_inf;
+	
+	private Session getSession() {
+		return entity_manager.unwrap(Session.class);
+	}
+	
+	@Override
+	public boolean placeOrder(int user_id, int book_id) throws BookException {
+		try{
+			this.getSession().save(new Orders( LocalDate.now().plusDays(7),"",new Book(book_id),new User(user_id)));
+			return true;
+		}catch(Exception e) {
+			throw new BookException("Invalid User id or Book id");
+		}
+	}
+	
+	@Override
+	public int removeOrder(int user_id, int book_id) throws BookException {
+		User user = user_inf.getUser(user_id).get();
+		Book book = book_inf.getBookById(book_id);
+		String jpql = "DELETE FROM Orders o WHERE o.user_id = :user and o.book_id = :book";
+		try{
+			return this.getSession().createQuery(jpql).setParameter("user", user).setParameter("book", book).executeUpdate();			
+		}catch (Exception e) {
+			throw new BookException("");
+		}
+	}
+
+	@Override
+	public List<Orders> getAllOrders(int user_id) throws BookException {
+		User user = user_inf.getUser(user_id).get();
+		String jpql = "select o from Orders o where o.user_id = :user_id";
+		List<Orders> orders = entity_manager.createQuery(jpql,Orders.class).setParameter("user_id", user).getResultList();
+		for(Orders o : orders) {
+			System.out.println(o.toString());
+		}
+		return orders;
+	}
+}

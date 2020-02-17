@@ -1,0 +1,80 @@
+package com.app.model;
+
+import java.util.Arrays;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import org.springframework.stereotype.Component;
+
+@Component
+@Entity
+@Table(name = "book")
+/**
+ * Class that contains Book details
+ * 
+*/
+public class Book {
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "book_id",nullable = false)
+	private Integer book_id;
+	private String name;
+	private float rating;
+	private String description;
+	private String author;
+	private Date edition;
+	private double price;
+	private String publisher;
+	private String language;
+	private int stock;
+	private String category;
+	private byte[] image;
+	
+	
+	public Book() {
+		super();
+	}
+
+
+	public Book(Integer book_id, String name, float rating, String description, String author, Date edition,
+			double price, String publisher, String language, int stock, String category, byte[] image) {
+		super();
+		this.book_id = book_id;
+		this.name = name;
+		this.rating = rating;
+		this.description = description;
+		this.author = author;
+		this.edition = edition;
+		this.price = price;
+		this.publisher = publisher;
+		this.language = language;
+		this.stock = stock;
+		this.category = category;
+		this.image = image;
+	}
+
+
+	public Book(Integer book_id, String name, float rating, String description, String author, Date edition,
+			double price, String publisher, String language, int stock, String category) {
+		super();
+		this.book_id = book_id;
+		this.name = name;
+		this.rating = rating;
+		this.description = description;
+		this.author = author;
+		this.edition = edition;
+		this.price = price;
+		this.publisher = publisher;
+		this.language = language;
+		this.stock = stock;
+		this.category = category;
+	}
+
+
+
+}
