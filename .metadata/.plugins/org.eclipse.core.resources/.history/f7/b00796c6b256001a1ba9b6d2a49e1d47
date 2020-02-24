@@ -1,0 +1,27 @@
+package com.app;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.Date;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.app.controller.OrderController;
+import com.app.exception.BookException;
+import com.app.model.Orders;
+
+@SpringBootTest
+public class TestOrder {
+	
+	@Autowired
+	OrderController order_controller;
+
+	@Test
+	public void testPlaceOrder() throws BookException {
+		Orders order = new Orders();
+		Date date = new Date();
+		assertEquals(order, order_controller.placeOrder(90,12));
+	}
+}

@@ -1,0 +1,60 @@
+package com.app.service;
+
+import java.util.List;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.app.dao.OrderDaoInf;
+import com.app.exception.BookException;
+import com.app.model.Orders;
+import com.app.model.User;
+
+@Service
+@Transactional
+/**
+ *  Class that perform CRUD operations on orders table that related to user and book
+ *  */
+public class OrderServiceImp implements OrderServiceInf{
+	
+	@Autowired
+	UserServiceInf user_Service;
+	@Autowired
+	BookServiceInf book_Service;
+	
+	@Autowired
+	OrderDaoInf dao;
+
+	/**
+	 *  taking user id and book id
+	 *  insert details into orders table
+	 *  */
+	@Override
+	public boolean placeOrder(int user_id, int book_id) throws BookException {
+		return dao.placeOrder(user_Service.getUser(user_id).get(), book_Service.getBookById(book_id));
+	}
+	/**
+	 * taking user id
+	 * delete all orders details from order based on user id
+	 * return no of orders deleted
+	 */
+	@Override
+	public int removeAllOrdersOfUser(int user_id) throws BookException{
+		return dao.removeAllOrdersOfUser(user_Service.getUser(user_id).get());
+	}
+	/**
+	 *  delete order detail of a particular user with particular book
+	 *  */
+	@Override
+	public int removeOrder(int user_id, int book_id) throws BookException {
+		return dao.removeOrder(user_Service.getUser(user_id).get(),book_Service.getBookById(book_id));
+	}
+	
+	/**
+	 * taking user id
+	 * return all the ordered books detail
+	 * */
+	@Override
+	public List<Orders> getAllOrders(int user_id) throws BookException {
+		return dao.getAllOrders(user_Service.getUser(user_id).get());
+	}	
+}

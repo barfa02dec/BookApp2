@@ -1,0 +1,26 @@
+package com.app.validation;
+
+import java.util.Optional;
+import com.app.exception.BookException;
+
+public class ValidateData {
+	
+	public static void checkNullValue(Object obj,String field) throws BookException {
+		Optional<Object> optional_obj = Optional.ofNullable(obj);
+		System.out.println(optional_obj);
+		optional_obj.orElseThrow(() -> new BookException("Invalid " + field));
+		if(field=="email")
+			validateEmail((String) obj);
+		if(field=="password")
+			validatePassword((String) obj);
+	} 
+
+	public static void validateEmail(String email) {
+		
+	}
+	
+	public static void validatePassword(String password) throws BookException {
+		if(password.length()>10 || password.length()<5)
+			throw new BookException("Invalid Password Length");
+	}
+}

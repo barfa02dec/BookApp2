@@ -1,0 +1,92 @@
+package com.app.controller;
+
+import java.util.Map;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.app.exception.BookException;
+import com.app.model.User;
+import com.app.service.UserServiceInf;
+
+@CrossOrigin(origins = "http://localhost:4200",allowedHeaders = "*")
+@RestController
+/**
+ *  Controller that performs CRUD operation that related to User
+ *  */
+public class UserController {
+	
+	@Autowired
+	UserServiceInf service;
+	
+	/**
+	 *  taking User data and register user details into user table
+	 *  */
+	@PostMapping("/user_add")
+	public boolean registerUser(@RequestBody User usr) {
+		return service.registerUser(usr);
+	}
+	/**
+	 *  taking user name and password 
+	 *  return user detail if user is valid
+	 *  */ 
+	//@RequestMapping(value = "user_validet", method = RequestMethod.POST,consumes={"text/plain"})
+	@PostMapping("/user_validet")
+	public @ResponseBody User validateUser(@RequestBody Map<String, String> json) throws BookException {
+		System.out.println(service.validateUser(json.get("email"), json.get("pass").toString()));
+		return service.validateUser(json.get("email"), json.get("pass"));
+		
+	}
+	/**
+	 *  Taking the user id
+	 *  delete the details of user from user table
+	 *  return boolean 
+	 *  */
+	@DeleteMapping("/user_remove")
+	public boolean removeUser(@RequestParam(name = "user_id") int user_id) throws BookException {
+		return service.removeUser(user_id);
+	}
+	/**
+	 * Taking the new user details 
+	 * update the details of the user
+	 * return updated details
+	 * */
+	@PutMapping("/user_update")
+	public User updateUser(@RequestBody User usr) throws BookException {
+		return service.updateUser(usr);
+	}
+	/**
+	 *  taking user_id 
+	 *  return user details
+	 *  */
+	@GetMapping("/get_user")
+	public Optional<User> getUser(@RequestParam(name = "id") int user_id) throws BookException {
+		return service.getUser(user_id);
+	}
+	
+	
+	
+	/**
+	 * 
+	 *Test how to pass multiple objects to Controller
+	 */
+//	@PostMapping("/test")
+//	public void testJsonArg(@RequestBody Map<String,String> json) {
+//		System.out.println(json.get("id").getClass());
+//		System.out.println(json.get("name").getClass());
+//		System.out.println(json.get("rating").getClass());
+//	}
+	
+}

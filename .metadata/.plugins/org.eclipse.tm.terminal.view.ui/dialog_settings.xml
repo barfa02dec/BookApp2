@@ -6,7 +6,7 @@
 			<section name="Git Bash">
 			</section>
 			<section name="Local Terminal">
-				<item key="encoding" value="Cp1252"/>
+				<item key="encoding" value="UTF-8"/>
 			</section>
 			<section name="Telnet Terminal">
 				<item key="lastHost" value="10.16.90.65"/>

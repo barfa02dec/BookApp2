@@ -1,0 +1,94 @@
+package com.app.dao;
+
+import java.time.LocalDate;
+import java.util.List;
+import javax.persistence.EntityManager;
+import org.hibernate.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+import com.app.exception.BookException;
+import com.app.model.Book;
+import com.app.model.Orders;
+import com.app.model.User;
+
+@Repository
+/**
+ * 
+ *   Class that perform CRUD operations on orders table that related to user and book using entity manager 
+ *   
+ */
+public class OrderDaoImp implements OrderDaoInf{
+	
+	@Autowired
+	EntityManager entity_manager;
+	
+	/**
+	 * Returns HIBERNATE session
+	 * */
+	private Session getSession() {
+		return entity_manager.unwrap(Session.class);
+	}
+
+	/**
+	 * 
+	 *  taking user id,book id
+	 *  insert details into orders table
+	 *
+	 * */
+	@Override
+	public boolean placeOrder(User user, Book book) throws BookException {
+		try{
+			this.getSession().save(new Orders( LocalDate.now().plusDays(7),"dss",book,user));
+			return true;
+		}catch(BookException e) {
+			throw new BookException("Out of stock");
+		}catch(Exception e) {
+			e.printStackTrace();
+			e.getMessage();
+			e.toString();
+			throw e;
+		}
+	}
+	
+	
+	/**
+	 * delete all order of a user
+	 * taking user id delete all details from order table
+	 */
+	@Override
+	public int removeAllOrdersOfUser(User user) throws BookException {
+		return this.getSession().createQuery("DELETE FROM Orders o WHERE o.user_id = :user").setParameter("user", user).executeUpdate();			
+	}
+	/**
+	 * 
+	 * delete order detail of a particular user with particular book
+	 * 
+	 */
+	@Override
+	public int removeOrder(User user, Book book) throws BookException {
+		
+		String jpql = "DELETE FROM Orders o WHERE o.user_id = :user and o.book_id = :book";
+		try{
+			return this.getSession().createQuery(jpql).setParameter("user", user).setParameter("book", book).executeUpdate();			
+		}catch (Exception e) {
+			throw new BookException("");
+		}
+	}
+	/**
+	 * 
+	 * taking user id
+	 * return all the ordered books detail 
+	 * 
+	 * */
+	@Override
+	public List<Orders> getAllOrders(User user) throws BookException {
+		return entity_manager.createQuery("select o from Orders o where o.user_id = :user",Orders.class).setParameter("user", user).getResultList();
+	}
+	
+//	@Override
+//	public boolean isOrderPlacedOfBookId(Book book) throws BookException{
+//		if(entity_manager.createQuery("select o from Orders o where o.book_id = :book",Orders.class).setParameter("book", book).getResultList()!=null) 
+//			return true;
+//		return false;
+//	}
+}

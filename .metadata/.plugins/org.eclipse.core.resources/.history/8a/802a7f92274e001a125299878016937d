@@ -1,8 +1,0 @@
-package com.app.repositry;
-
-import org.springframework.data.repository.CrudRepository;
-import com.app.model.Orders;
-
-public interface OrderRepository extends CrudRepository<Orders, Integer>{
-	
-}

@@ -1,0 +1,48 @@
+package com.app;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+import com.app.exception.BookException;
+import com.app.model.User;
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class TestUser {
+	
+	@Test
+	public void testRegistration() throws BookException {
+		User user = new User();
+		
+		assertThrows(NullPointerException.class, () -> {
+	        user.setName("uigiuh");
+			user.setEmail("barfa02dec@gmail.com");
+			user.setPassword(null);
+			user.setRole("Admin");
+			user.setAddress("a");
+			user.setContact("14137594");    
+	    });
+		
+//		assertThrows(IllegalArgumentException.class, () -> {
+//	        user.setName("a");
+//			user.setEmail("barfa02dec@gmail.com");
+//			user.setPassword("");
+//			user.setRole("User");
+//			user.setAddress("a");
+//			user.setContact("14134");    
+//	    });
+		//assertEquals(new BookException("Invalid name"), user_controller.registerUser(user));
+		
+		
+//		
+//		try {
+//			assertEquals(new BookException("Invalid name"), user_controller.registerUser(user));
+//		} catch (BookException e) {
+//			System.out.println("error");
+//			e.printStackTrace();
+//		}
+	}
+
+}

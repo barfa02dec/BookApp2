@@ -1,0 +1,14 @@
+package com.app.validation;
+
+import java.util.Optional;
+
+import com.app.exception.BookException;
+
+public class ValidateBookDetails {
+
+	public static void checkNullValue(Object obj,String field) throws BookException {
+		Optional<Object> optional_obj = Optional.ofNullable(obj);
+		optional_obj.orElseThrow(() -> new BookException("Invalid " + field));
+	} 
+
+}

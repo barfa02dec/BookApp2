@@ -1,0 +1,147 @@
+package com.app.controller;
+
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.app.exception.BookException;
+import com.app.model.Book;
+import com.app.service.BookServiceInf;
+
+@CrossOrigin(origins = "http://localhost:4200",allowedHeaders = "*")
+@RestController
+
+/* Controller that navigates between model and view for performing CRUD operation on Book table */
+public class BookController {
+
+	/* service class variable for book */
+	@Autowired
+	private BookServiceInf admin_sevice;
+
+	/********* Insert Book 
+	 * @throws IOException ************/
+
+	
+	@PostMapping("/add_book")
+	public void registerUserProfile(@RequestParam(name = "image") MultipartFile image,@RequestParam(name = "name") String name,
+			@RequestParam(name = "rating") float rating,@RequestParam(name = "description") String description,
+			@RequestParam(name = "author") String author,@RequestParam(name = "edition") Date edition,@RequestParam(name = "price") double price,
+			@RequestParam(name = "publisher") String publisher,@RequestParam(name = "language") String language,@RequestParam(name = "stock") int stock,
+			@RequestParam(name = "category") String category) throws IOException {
+		Book book = new Book(name,rating,description,author,edition,price,publisher,language,stock,category);
+		book.setImage(image.getBytes());
+		admin_sevice.addBook(book);
+	}
+
+	/************** Select Books ******************/
+	
+	/* return all books */
+	@GetMapping("/get_all_books")
+	public @ResponseBody List<Book> getAllBooks(){
+		return admin_sevice.getAllBook();
+	}
+	/* taking book id and return book details */
+	@GetMapping("/get_book_by_id")
+	public @ResponseBody Book getBookById(@RequestParam(name = "id") int book_id) throws BookException {
+		return admin_sevice.getBookById(book_id);
+	}
+	/* taking book name and return book details */	
+	@GetMapping("/get_book_by_name")
+	public @ResponseBody List<Book> getBookByName(@RequestParam(name = "name") String name) throws BookException {
+		return admin_sevice.getBookByName(name);
+	}
+
+	/**
+	 * Remove Book
+	 * */
+	
+	/**
+	 *  Remove book by book id
+	 *  */
+	@DeleteMapping("/remove_book")
+	public boolean removeBook(@RequestParam(name = "id") int id) throws BookException {
+		return admin_sevice.removeBook(id);		
+	}
+	/* Remove book by book name and return no of deleted values */
+	@DeleteMapping("/remove_book_by_name")
+	public @ResponseBody int removeBookByName(@RequestParam(name = "name") String name) throws BookException {
+		return admin_sevice.removeBookByName(name);		
+	}
+
+	/**
+	 * Update Book
+	 * */
+	
+	/**
+	 *  Taking new book data 
+	 *  return updated data
+	 *  */
+	@PostMapping("/update_book")
+	public Book updateBook(@RequestParam(name = "image") MultipartFile image,@RequestParam(name = "name") String name,
+			@RequestParam(name = "rating") float rating,@RequestParam(name = "description") String description,
+			@RequestParam(name = "author") String author,@RequestParam(name = "edition") Date edition,@RequestParam(name = "price") double price,
+			@RequestParam(name = "publisher") String publisher,@RequestParam(name = "language") String language,@RequestParam(name = "stock") int stock,
+			@RequestParam(name = "category") String category,@RequestParam(name = "book_id")int book_id) throws IOException, BookException {
+		Book book = new Book(book_id,name,rating,description,author,edition,price,publisher,language,stock,category);
+		book.setImage(image.getBytes());
+		return admin_sevice.updateBook(book);		
+	}
+	
+	
+	/**
+	 * Filter Books
+	 */
+	
+	/**
+	 * Filter book by rating between upper and lower rating
+	 * return list of book 
+	 * */
+	@GetMapping("/get_book_by_rating")
+	public List<Book> getAllBooksByRating(@RequestParam(name = "lower_rating")float lower_rating,@RequestParam(name = "upper_rating")float upper_rating){
+		return admin_sevice.getAllBooksByRating(lower_rating, upper_rating);
+	}
+	/**
+	 *  Filter book by price between upper and lower price
+	 *  return list of book
+	 *  */
+	@GetMapping("/get_book_by_price")
+	public List<Book> getAllBooksByPrice(@RequestParam(name = "lower_price")double lower_price,@RequestParam(name = "upper_price")double upper_price){
+		return admin_sevice.getAllBooksByPrice(lower_price, upper_price);
+	}
+	/**
+	 *  Filter book by category
+	 *  list of book 
+	 *  */	
+	@GetMapping("/get_book_by_category")
+	public List<Book> getAllBooksByCategory(@RequestParam(name = "category")String category){
+		return admin_sevice.getAllBooksByCategories(category);
+	}
+	/**
+	 * Filter book by language 
+	 * return list of book 
+	 * */	
+	@GetMapping("/get_book_by_language")
+	public List<Book> getAllBooksByLanguage(@RequestParam(name = "language")String language){
+		return admin_sevice.getAllBooksByLanguage(language);		
+	}
+	/**
+	 *  filter book by rating, price, language, category
+	 *  return list of book
+	 *  */
+	@GetMapping("get_book_by_raing_price_category_language")
+	public List<Book> getAllBooksByAllFilters(@RequestParam(name = "language")String language,
+			@RequestParam(name = "lower_rating")float lower_rating,@RequestParam(name = "upper_rating")float upper_rating,
+			@RequestParam(name = "lower_price")double lower_price,@RequestParam(name = "upper_price")double upper_price,
+			@RequestParam(name = "category")String category){
+		return admin_sevice.getAllBooksByLanguage(language,lower_rating,upper_rating,lower_price,upper_price,category);		
+	}
+}
